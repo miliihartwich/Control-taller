@@ -10,7 +10,11 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": [
+    "https://control-taller.bubbleapps.io/version-test",
+    "https://control-taller.bubbleapps.io/version-test?debug_mode=true"
+]}})
+
 
 engine = create_engine("postgresql+psycopg2://postgres:miliMili0801@localhost/base_de_datos_taller")
 
