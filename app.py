@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from sqlalchemy import create_engine
 from sqlalchemy import text
 from flask_cors import CORS
+import os
 
 
 app = Flask(__name__)
@@ -35,6 +36,10 @@ def get_db_connection():
 @app.route('/')
 def index():
     return '¡Hola desde Flask!'
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 #obtener todo de empleado
 @app.route('/get_empleado', methods=['GET'])
