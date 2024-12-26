@@ -16,12 +16,12 @@ CORS(app, resources={r"/*": {"origins": [
     "https://control-taller.bubbleapps.io/version-test?debug_mode=true"
 ]}})
 
-
-engine = create_engine("postgresql+psycopg2://postgres:miliMili0801@localhost/base_de_datos_taller")
-
 # Configuración secreta para JWT
-app.config["JWT_SECRET_KEY"] = "miliMili0801"
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default_secret")
 jwt = JWTManager(app)
+
+# Conexión a PostgreSQL
+engine = create_engine(os.environ.get("DATABASE_URL"))
 
 # Conexión a PostgreSQL
 def get_db_connection():
