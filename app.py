@@ -25,7 +25,13 @@ DATABASE_URL = "postgresql://base_de_datos_taller_user:s0CBwhZkqiu1WfxnG8KhlSHez
 
 def get_db_connection():
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        conn = psycopg2.connect(
+            host='dpg-ctmrs9i3esus739s5ua0-a.oregon-postgres.render.com',
+            database='base_de_datos_taller',
+            user='postgres',  # o tu usuario de base de datos
+            password='miliMili0801',
+            port=5432
+        )
         return conn
     except Exception as e:
         raise RuntimeError(f"Error al conectar a la base de datos: {e}")
