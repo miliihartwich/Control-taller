@@ -11,6 +11,7 @@ import os
 
 app = Flask(__name__)
 
+# Configuración de CORS
 CORS(app, resources={r"/*": {"origins": [
     "https://control-taller.bubbleapps.io/version-test",
     "https://control-taller.bubbleapps.io/version-test?debug_mode=true"
@@ -20,26 +21,23 @@ CORS(app, resources={r"/*": {"origins": [
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default_secret")
 jwt = JWTManager(app)
 
-# Conexión a PostgreSQL
-engine = create_engine(os.environ.get("DATABASE_URL"))
+# Conexión a PostgreSQL usando SQLAlchemy
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL no está configurada en las variables de entorno.")
+engine = create_engine(DATABASE_URL)
 
-# Conexión a PostgreSQL
+# Conexión a PostgreSQL usando psycopg2
 def get_db_connection():
-    conn = psycopg2.connect(
-        host='localhost',  
-        database='base_de_datos_taller',
-        user='postgres',
-        password='miliMili0801'
-    )
-    return conn
+    try:
+        conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        return conn
+    except Exception as e:
+        raise RuntimeError(f"Error al conectar a la base de datos: {e}")
 
 @app.route('/')
 def index():
     return '¡Hola desde Flask!'
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
 
 #obtener todo de empleado
 @app.route('/get_empleado', methods=['GET'])
@@ -902,6 +900,6 @@ def actualizar_configuracion(clave):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
