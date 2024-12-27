@@ -21,19 +21,15 @@ CORS(app, resources={r"/*": {"origins": [
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default_secret")
 jwt = JWTManager(app)
 
-# Conexión a PostgreSQL usando SQLAlchemy
-DATABASE_URL = os.environ.get("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL no está configurada en las variables de entorno.")
-engine = create_engine(DATABASE_URL)
+DATABASE_URL = "postgresql://base_de_datos_taller_user:s0CBwhZkqiu1WfxnG8KhlSHezzN8WwD3@dpg-ctmrs9i3esus739s5ua0-a.oregon-postgres.render.com/base_de_datos_taller"
 
-# Conexión a PostgreSQL usando psycopg2
 def get_db_connection():
     try:
         conn = psycopg2.connect(DATABASE_URL, sslmode="require")
         return conn
     except Exception as e:
         raise RuntimeError(f"Error al conectar a la base de datos: {e}")
+
 
 @app.route('/')
 def index():
