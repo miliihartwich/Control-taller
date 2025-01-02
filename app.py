@@ -8,7 +8,6 @@ from sqlalchemy import text
 from flask_cors import CORS
 import os
 
-
 app = Flask(__name__)
 
 # Configuración de CORS
@@ -21,21 +20,19 @@ CORS(app, resources={r"/*": {"origins": [
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default_secret")
 jwt = JWTManager(app)
 
-DATABASE_URL = "postgresql://base_de_datos_taller_user:s0CBwhZkqiu1WfxnG8KhlSHezzN8WwD3@dpg-ctmrs9i3esus739s5ua0-a.oregon-postgres.render.com/base_de_datos_taller"
+# URL de conexión a la base de datos desde las variables de entorno
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://base_de_datos_taller_user:s0CBwhZkqiu1WfxnG8KhlSHezzN8WwD3@dpg-ctmrs9i3esus739s5ua0-a.oregon-postgres.render.com/base_de_datos_taller"
+)
 
+# Función para obtener la conexión a la base de datos
 def get_db_connection():
     try:
-        conn = psycopg2.connect(
-            host='dpg-ctmrs9i3esus739s5ua0-a.oregon-postgres.render.com',
-            database='base_de_datos_taller',
-            user='postgres',  # o tu usuario de base de datos
-            password='miliMili0801',
-            port=5432
-        )
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
         return conn
     except Exception as e:
         raise RuntimeError(f"Error al conectar a la base de datos: {e}")
-
 
 @app.route('/')
 def index():
