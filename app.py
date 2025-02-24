@@ -12,8 +12,10 @@ from datetime import timedelta
 import traceback
 import logging
 from flask import request, jsonify
+from flask import Flask, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='dist')
+
 
 # Configuración del token JWT
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=12)
@@ -35,11 +37,17 @@ def get_db_connection():
         return conn
     except Exception as e:
         raise RuntimeError(f"Error al conectar a la base de datos: {e}")
-
-
+    
+# Ruta para servir el archivo index.html
 @app.route('/')
 def index():
-    return '¡Hola desde Flask!'
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Ruta para servir los archivos estáticos como CSS, JS, etc.
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(app.static_folder, path)
+
 
 #obtener todo de empleado
 print(">>> Cargando función todo empleado()")
