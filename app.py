@@ -629,10 +629,14 @@ def create_orden():
         cliente_rut = data["cliente"]  # Cliente (rut_ci)
         descripcion_nombre = data["descripcion"]
         fecha_inicio = data["fecha_inicio"]
-        fecha_fin = data["fecha_fin"]
+        fecha_fin = data.get("fecha_fin")
 
         conn = get_db_connection()
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Si fecha_fin es una cadena vacía o None, cambiarlo a None explícitamente
+        if not fecha_fin:
+            fecha_fin = None
 
         # 🔍 Buscar el ID de la división
         cursor.execute("SELECT id FROM division_opciones WHERE nombre = %s", (nombre_division,))
@@ -678,10 +682,11 @@ def create_orden():
         rut_ci = cliente_row["rut_ci"]
 
         # ✅ Insertar la orden con los IDs correctos
+        
         cursor.execute(
-            "INSERT INTO ordenes (division_id, tipo_id, descripcion_id, rut_ci, fecha_inicio, fecha_fin) VALUES (%s, %s, %s, %s, %s, %s)",
-            (id_division, id_tipo, descripcion_id, rut_ci, fecha_inicio, fecha_fin),
-        )
+    "INSERT INTO ordenes (division_id, tipo_id, descripcion_id, rut_ci, fecha_inicio, fecha_fin) VALUES (%s, %s, %s, %s, %s, %s)",
+    (id_division, id_tipo, descripcion_id, rut_ci, fecha_inicio, fecha_fin),
+)
 
         conn.commit()
         conn.close()
